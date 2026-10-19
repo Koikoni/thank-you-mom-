@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>给妈妈的信 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { min-height: 100%; overflow-x: hidden; }
+
+  body {
+    font-family: 'Noto Serif SC', 'Cormorant Garamond', Georgia, serif;
+    background: radial-gradient(ellipse at top, #2a1a2a 0%, #1a0f1a 50%, #0a050a 100%);
+    background-attachment: fixed;
+    color: #e8e0e0;
+    line-height: 1.8;
+    padding: 20px 14px 40px;
+    min-height: 100vh;
+  }
+
+  /* Красивые падающие лепестки на фоне */
+  .bg-petal {
+    position: fixed;
+    top: -20px;
+    font-size: 1.2rem;
+    opacity: 0.6;
+    animation: fall linear infinite;
+    z-index: 1;
+    pointer-events: none;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); }
+  }
+
+  .container { max-width: 500px; margin: 0 auto; position: relative; z-index: 10; }
+
+  .card {
+    background: rgba(30,15,25,0.92);
+    border: 1px solid rgba(255,180,200,0.3);
+    border-radius: 18px;
+    padding: 30px 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,180,200,0.05);
+    position: relative;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+  }
+
+  .screen { display: none; animation: fadeIn 0.8s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .title {
+    text-align: center;
+    font-family: 'Great Vibes', 'Noto Serif SC', cursive;
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
+    color: #ffd1dc;
+    text-shadow: 0 0 20px rgba(255,180,200,0.8);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+
+  .text-block {
+    font-size: 1.1rem;
+    color: #f0e0e8;
+    line-height: 1.8;
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .q-block {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 18px 16px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255,180,200,0.2);
+  }
+
+  .q-text {
+    font-size: 1.1rem;
+    color: #ffd1dc;
+    margin-bottom: 12px;
+    text-align: center;
+    font-style: italic;
+  }
+
+  .answers-row { display: flex; gap: 12px; justify-content: center; }
+
+  .ans-btn {
+    flex: 1;
+    min-height: 55px;
+    padding: 12px;
+    background: rgba(255,255,255,0.06);
+    color: #ffd1dc;
+    border: 2px solid rgba(255,180,200,0.35);
+    border-radius: 50px;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.25s;
+    -webkit-appearance: none;
+  }
+  .ans-btn:active { transform: scale(0.95); }
+
+  .ans-btn.good.yes-clicked {
+    background: linear-gradient(135deg, #b0306a, #7a1a44);
+    border-color: #ffd700;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255,215,0,0.6);
+    pointer-events: none;
+  }
+
+  /* Кнопка "Нет", которая отпадает */
+  .ans-btn.bad.falling {
+    animation: dropAway 0.6s forwards;
+    pointer-events: none;
+  }
+  @keyframes dropAway {
+    0% { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
+    100% { transform: translateY(100px) rotate(45deg) scale(0.5); opacity: 0; }
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    min-height: 60px;
+    padding: 18px 30px;
+    background: linear-gradient(135deg, #b0306a, #7a1a44);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(180,50,110,0.5);
+    text-transform: uppercase;
+    margin-top: 20px;
+    -webkit-appearance: none;
+  }
+  .btn:disabled { opacity: 0.4; pointer-events: none; }
+
+  /* Стили для ползунка */
+  .slider {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    background: linear-gradient(to right, #b0306a, #ff88b0, #ffd700);
+    border-radius: 4px;
+    outline: none;
+    margin: 15px 0;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
+    background: radial-gradient(circle, #ffd700, #b0306a);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255,215,0,0.8);
+    border: 2px solid #fff;
+  }
+  .slider-value {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #ffd700;
+    font-weight: 700;
+    text-shadow: 0 0 15px rgba(255,215,0,0.9);
+  }
+
+  /* Поле для ввода текста */
+  .input-area {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px;
+    background: rgba(0,0,0,0.4);
+    border: 2px solid rgba(255,180,200,0.3);
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+    font-size: 1.05rem;
+    resize: vertical;
+    margin-bottom: 15px;
+  }
+  .input-area:focus { outline: none; border-color: #ff88b0; }
+
+  /* Таймер */
+  .timer-box {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 999;
+    background: rgba(30,15,25,0.9);
+    border: 2px solid #ffd700;
+    border-radius: 12px;
+    padding: 8px 15px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: #ffd700;
+    box-shadow: 0 0 20px rgba(255,215,0,0.4);
+  }
+
+  /* ===== СТИЛИ ДЛЯ КРАСИВОЙ ПОСЛЕДНЕЙ СТРАНИЦЫ ===== */
+  .letter-card {
+    background: linear-gradient(135deg, rgba(30,10,20,0.95), rgba(50,20,30,0.95));
+    border: 1px solid rgba(255,215,0,0.4);
+    box-shadow: 0 0 50px rgba(255,100,150,0.3), inset 0 0 30px rgba(255,215,0,0.05);
+    position: relative;
+    overflow: hidden;
+    animation: cardAppear 1.5s ease;
+  }
+
+  @keyframes cardAppear {
+    from { opacity: 0; transform: translateY(50px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .glow-effect {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 60%);
+    animation: glowPulse 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+  }
+
+  /* ЛЕТАЮЩИЕ МИЛЫЕ СМАЙЛИКИ */
+  .floating-emoji {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.7;
+    z-index: 1;
+    pointer-events: none;
+    filter: drop-shadow(0 0 10px rgba(255,100,150,0.5));
+  }
+
+  .floating-emoji.e1 { top: 10%; left: 5%; animation: float1 6s ease-in-out infinite; }
+  .floating-emoji.e2 { top: 20%; right: 8%; animation: float2 7s ease-in-out infinite; font-size: 2.5rem; }
+  .floating-emoji.e3 { top: 45%; left: 3%; animation: float1 5s ease-in-out infinite reverse; font-size: 1.8rem; }
+  .floating-emoji.e4 { top: 65%; right: 5%; animation: float2 8s ease-in-out infinite; font-size: 2.2rem; }
+  .floating-emoji.e5 { top: 80%; left: 10%; animation: float1 6s ease-in-out infinite 1s; }
+  .floating-emoji.e6 { top: 90%; right: 15%; animation: float2 7s ease-in-out infinite 0.5s; font-size: 2rem; }
+
+  @keyframes float1 {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(15deg); }
+  }
+  @keyframes float2 {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(20px) rotate(-15deg); }
+  }
+
+  .title-huge {
+    font-size: clamp(2.2rem, 10vw, 3.5rem) !important;
+    background: linear-gradient(to right, #ffd700, #ff88b0, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 40px rgba(255,215,0,0.5);
+    margin-bottom: 10px;
+    animation: titleFade 2s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  .divider {
+    width: 150px; height: 2px;
+    background: linear-gradient(to right, transparent, #ffd700, transparent);
+    margin: 0 auto 30px auto;
+    box-shadow: 0 0 15px #ffd700;
+    animation: expandLine 2s ease;
+    position: relative;
+    z-index: 2;
+  }
+  @keyframes expandLine {
+    from { width: 0; opacity: 0; }
+    to { width: 150px; opacity: 1; }
+  }
+
+  .big-letter {
+    font-size: 1.1rem !important;
+    line-height: 2 !important;
+    color: #f5e8ec !important;
+    text-align: justify;
+    text-indent: 2em;
+    animation: textFadeIn 3s ease;
+    position: relative;
+    z-index: 2;
+  }
+  @keyframes textFadeIn {
+    from { opacity: 0; filter: blur(5px); }
+    to { opacity: 1; filter: blur(0); }
+  }
+
+  .final-heart {
+    text-align: center;
+    font-size: 3rem;
+    margin: 20px 0;
+    animation: heartBeat 1.5s infinite alternate;
+    filter: drop-shadow(0 0 20px rgba(255,100,150,0.8));
+    position: relative;
+    z-index: 2;
+  }
+  @keyframes heartBeat {
+    from { transform: scale(1); }
+    to { transform: scale(1.2); }
+  }
+
+  .btn-epic {
+    background: linear-gradient(135deg, #ffd700, #b8860b) !important;
+    color: #1a0505 !important;
+    font-size: 1.3rem !important;
+    box-shadow: 0 0 30px rgba(255,215,0,0.7) !important;
+    animation: btnPulse 2s infinite;
+    position: relative;
+    z-index: 2;
+  }
+  @keyframes btnPulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(255,215,0,0.7); }
+    50% { box-shadow: 0 0 50px rgba(255,215,0,1); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Таймер в углу -->
+<div class="timer-box" id="timerBox">⏱ 00:00</div>
+
+<div class="container">
+
+  <!-- 第 1 页 -->
+  <div class="screen active" id="page1">
+    <div class="card">
+      <h1 class="title">您好</h1>
+      <p class="text-block">
+        您好。我是热尼亚 (Женя)。<br>
+        我为你们做了这个问卷。<br><br>
+        请不要认为这是不礼貌的。我带着极大的尴尬和羞涩写下这些话。如果我是这样的人，请原谅我。也许你们从你们那完美的女儿的讲述中，对我稍微有一点点了解。<br><br>
+        还有，请不要骂她。你们可以骂我，但不要骂她。<br>
+        谢谢你们读到这里。
+      </p>
+      <button class="btn" onclick="nextPage(2)">点击继续 ➜</button>
+    </div>
+  </div>
+
+  <!-- 第 2 页 -->
+  <div class="screen" id="page2">
+    <div class="card">
+      <h1 class="title">你们了解我吗？</h1>
+      
+      <div class="q-block">
+        <div class="q-text">你们对我的了解有多少？</div>
+        <input type="range" class="slider" id="knowSlider" min="0" max="100" value="50" oninput="updateSlider('knowSlider', 'knowValue')">
+        <div class="slider-value" id="knowValue">50%</div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-text">你们觉得你们的女儿像我心中一样完美吗？</div>
+        <div class="answers-row">
+          <button class="ans-btn good" onclick="clickYes(this)">是</button>
+          <button class="ans-btn bad" onclick="fadeButton(this)">否</button>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-text">你们的女儿非常有才华吗？</div>
+        <div class="answers-row">
+          <button class="ans-btn good" onclick="clickYes(this)">是</button>
+          <button class="ans-btn bad" onclick="fadeButton(this)">否</button>
+        </div>
+      </div>
+
+      <button class="btn" onclick="nextPage(3)">继续 ➜</button>
+    </div>
+  </div>
+
+  <!-- 第 3 页 -->
+  <div class="screen" id="page3">
+    <div class="card">
+      <h1 class="title">我的想法</h1>
+      <p class="text-block">
+        你们知道吗，我也这么认为，她非常有才华，也很特别。<br><br>
+        唉，如果你们能用我的眼睛看看她就好了……
+      </p>
+      <button class="btn" onclick="nextPage(4)">继续 ➜</button>
+    </div>
+  </div>
+
+  <!-- 第 4 页 -->
+  <div class="screen" id="page4">
+    <div class="card">
+      <h1 class="title">好奇</h1>
+      
+      <div class="q-block">
+        <div class="q-text">出于好奇：为什么她总是觉得自己不够好？</div>
+        <textarea class="input-area" placeholder="请在这里写下..."></textarea>
+      </div>
+
+      <div class="q-block">
+        <div class="q-text">她内向/害羞吗？</div>
+        <input type="range" class="slider" id="shySlider" min="0" max="100" value="50" oninput="updateSlider('shySlider', 'shyValue')">
+        <div class="slider-value" id="shyValue">50%</div>
+      </div>
+
+      <button class="btn" onclick="nextPage(5)">继续 ➜</button>
+    </div>
+  </div>
+
+  <!-- 第 5 页 -->
+  <div class="screen" id="page5">
+    <div class="card">
+      <h1 class="title">请求</h1>
+      <p class="text-block">
+        我知道我可能没有资格对你们说这些。<br>
+        但我希望你们答应我，当你们的女儿回国后，请带她去医院检查一下，原因如下：
+      </p>
+      <div style="text-align: left; font-size: 1rem; margin-bottom: 20px; padding-left: 15px; color: #ffd1dc;">
+        1. 她心脏经常疼<br>
+        2. 她腿经常疼<br>
+        3. 她经常感到疲惫<br>
+        4. 肚子疼<br>
+        5. 需要看骨科：她撞到了小脚趾，疼了3个星期，这很不正常。请一定带她去。<br>
+        6. 第6个原因由你们来决定。
+      </div>
+      
+      <div class="q-block">
+        <div class="answers-row">
+          <button class="ans-btn good" onclick="clickYes(this)">我保证</button>
+          <button class="ans-btn bad" onclick="fadeButton(this)">不保证</button>
+        </div>
+      </div>
+
+      <button class="btn" onclick="nextPage(6)">继续 ➜</button>
+    </div>
+  </div>
+
+  <!-- 第 6 页 (КРАСИВАЯ) -->
+  <div class="screen" id="page6">
+    <div class="card letter-card">
+      <div class="glow-effect"></div>
+      
+      <!-- Летающие милые смайлики на фоне карточки -->
+      <div class="floating-emoji e1">💖</div>
+      <div class="floating-emoji e2">🌸</div>
+      <div class="floating-emoji e3">🎀</div>
+      <div class="floating-emoji e4">🧸</div>
+      <div class="floating-emoji e5">✨</div>
+      <div class="floating-emoji e6">💕</div>
+      
+      <h1 class="title title-huge">我的告白</h1>
+      <div class="divider"></div>
+
+      <p class="letter-text big-letter">
+        你们好，再次问候。我叫叶甫根尼 (Евгений)，今年23岁，来自俄罗斯，我就是那个整天和她说话的人。<br><br>
+        但别担心，我会让她早点睡觉。虽然有时会因为任性而争吵，但我还是会让她去睡的，尽管她会因此生我的气。<br><br>
+        我想对你们说的是……你们知道吗，我是第一次遇到像她这样的人。她可爱、开朗、聪明、美丽。而且你们知道吗，如果有人问我为什么爱她，我答不上来——因为爱是没有理由的。<br><br>
+        我真的很喜欢她，我爱她。她总是努力学习，也很能吃，我在监督这些。如果我做得不对，请原谅我。<br><br>
+        总之，我非常爱你们的女儿，我想永远和她在一起，无论她身在何处。我想和她在一起，因为没有她，我看不到生活的意义。她就像那一束阳光，照进了灵魂最黑暗的地方。你们知道吗，我的生活并不那么明亮，但自从她出现后，生活变得明亮了。<br><br>
+        我想向你们保证：我不会让她哭泣和悲伤。我不想看到她的眼泪，我只想看到她美丽的笑容。因为她太美了，虽然她继承了你们的特征（请原谅我，我不知道这样说是否合适）。<br><br>
+        还有，请不要骂她，拜托了，她很完美，不是吗？如果要骂，请骂我，不要骂她。<br><br>
+        总之……我非常感谢你们有了这么完美的女儿。你们是非常好的父母，我想她是随了你们。我真心感谢你们把她教育得这么好。我真的爱她胜过我的生命。<br><br>
+        谢谢你们陪我走过这段旅程，谢谢你们花时间看这些。
+      </p>
+      
+      <div class="final-heart">💖</div>
+      <button class="btn btn-epic" onclick="showEnd()">完成</button>
+    </div>
+  </div>
+
+  <!-- 结束页 -->
+  <div class="screen" id="pageEnd">
+    <div class="card" style="background: linear-gradient(135deg, #2a1a2a, #4a1a2a);">
+      <h1 class="title" style="color: #ffd700;">谢谢！💖</h1>
+      <p class="text-block">你们看到了最后。我非常珍惜你们的时间。</p>
+      <div style="text-align: center; font-size: 3rem; animation: beat 1s infinite alternate;">❤️</div>
+      <p class="text-block" style="font-size: 0.9rem; margin-top: 30px;" id="finalTimeText"></p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // 点击“是”
+  function clickYes(btn) {
+    if (btn.classList.contains('yes-clicked')) return;
+    btn.classList.add('yes-clicked');
+    spawnHearts(btn);
+  }
+
+  // 点击负面按钮——直接掉落消失
+  function fadeButton(btn) {
+    btn.classList.add('falling'); // 触发掉落动画
+    setTimeout(() => {
+      btn.style.display = 'none'; // 完全从页面中移除
+    }, 600);
+  }
+
+  // 翻页
+  function nextPage(pageNum) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('page' + pageNum).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // 更新滑动条
+  function updateSlider(sliderId, valueId) {
+    const slider = document.getElementById(sliderId);
+    const value = document.getElementById(valueId);
+    value.textContent = slider.value + '%';
+  }
+
+  // 点击“是”时的爱心特效
+  function spawnHearts(btn) {
+    const rect = btn.getBoundingClientRect();
+    for (let i = 0; i < 6; i++) {
+      const heart = document.createElement('div');
+      heart.textContent = ['💖', '💕', '✨'][Math.floor(Math.random() * 3)];
+      heart.style.position = 'fixed';
+      heart.style.left = rect.left + rect.width / 2 + 'px';
+      heart.style.top = rect.top + 'px';
+      heart.style.fontSize = (1 + Math.random()) + 'rem';
+      heart.style.pointerEvents = 'none';
+      heart.style.zIndex = '9999';
+      heart.style.transition = 'all 1s ease-out';
+      document.body.appendChild(heart);
+
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 50 + Math.random() * 50;
+      
+      setTimeout(() => {
+        heart.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist - 50}px)`;
+        heart.style.opacity = '0';
+      }, 10);
+
+      setTimeout(() => heart.remove(), 1000);
+    }
+  }
+
+  // 计时器
+  let seconds = 0;
+  let timerInterval = setInterval(() => {
+    seconds++;
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    document.getElementById('timerBox').textContent = `⏱ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }, 1000);
+
+  function showEnd() {
+    clearInterval(timerInterval);
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('pageEnd').classList.add('active');
+    
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    document.getElementById('finalTimeText').textContent = `你们用了 ${m} 分 ${s} 秒看完了这些。`;
+    window.scrollTo(0, 0);
+  }
+
+  // 背景飘落的花瓣
+  function createPetals() {
+    const petals = ['🌸', '🌹', '💖', '💕', '✨'];
+    for (let i = 0; i < 15; i++) {
+      const petal = document.createElement('div');
+      petal.className = 'bg-petal';
+      petal.textContent = petals[Math.floor(Math.random() * petals.length)];
+      petal.style.left = Math.random() * 100 + 'vw';
+      petal.style.animationDuration = (5 + Math.random() * 5) + 's';
+      petal.style.animationDelay = Math.random() * 5 + 's';
+      document.body.appendChild(petal);
+    }
+  }
+  createPetals();
+</script>
+
+</body>
+</html>
